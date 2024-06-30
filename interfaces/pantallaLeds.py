@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import ttk, Menu, messagebox
 from PIL import Image, ImageTk
 
-class Leds(Tk):
+class Leds(Toplevel):
     estadoboton = True
     estadoarduino = True
     def __init__(self):
@@ -11,9 +11,9 @@ class Leds(Tk):
         self.geometry("400x400")
         self.resizable(0,0)
         self.config(bg="#ffffff")
-        # self.imagenframe = PhotoImage(file="./assets/0000.png")
-        # self.imagen_led = Label(self, image=self.imagenframe,background="#283f9b")
-        # self.imagen_led.pack(pady=10)
+        self.imagenframe = PhotoImage(file="assets/0000.png")
+        self.imagen_led = Label(self, image=self.imagenframe, bg="#000000")
+        self.imagen_led.place(x=70, y=320)
         Label(self, text="Previsualizacion de leds",font=('Arial',14,"bold"),background="#283f9b",fg="#ffffff")
         Label(self, text="Configuracion de los leds",
               font=("Arial",14,"bold"),bg="#ffffff",fg="#283f9b").pack(pady=10)
@@ -63,11 +63,24 @@ class Leds(Tk):
                 self.imagen_led.config(image=self.imagenmostrar)
                 confirmacion = True
             elif modo == "Parpadeo":
-                print(modo)
-                gif_path = "assets/leds/Parpadeo/"+ leds + ".gif"
-                print(gif_path)
                 self.frames_num = 2
-                self.gif_path = gif_path
+                self.gif_path = "assets/"+ leds + ".gif"
+                self.frames = [PhotoImage(file=self.gif_path, format=f"gif -index {i}") for i in range(self.frames_num)]
+                self.current_frame = 0
+                self.animacionled = True
+                self.update_frame()
+                confirmacion = True
+            elif modo == "Encender desde izquierda":
+                self.frames_num = 5
+                self.gif_path = "assets/encenderiz.gif"
+                self.frames = [PhotoImage(file=self.gif_path, format=f"gif -index {i}") for i in range(self.frames_num)]
+                self.current_frame = 0
+                self.animacionled = True
+                self.update_frame()
+                confirmacion = True
+            elif modo == "Encender desde derecha":
+                self.frames_num = 5
+                self.gif_path = "assets/encenderde.gif"
                 self.frames = [PhotoImage(file=self.gif_path, format=f"gif -index {i}") for i in range(self.frames_num)]
                 self.current_frame = 0
                 self.animacionled = True
@@ -99,6 +112,7 @@ class Leds(Tk):
             self.current_frame = (self.current_frame + 1) % self.frames_num
             self.imagen_led.configure(image=frame)
             self.imagen_led.after(1000, self.update_frame) 
+
 if __name__ == "__main__":
     app = Leds()
     app.mainloop()
