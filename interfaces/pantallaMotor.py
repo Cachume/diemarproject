@@ -19,9 +19,9 @@ class Motor(Toplevel):
 
     def setup_ui(self):
         title_label = Label(self, text="Control de Velocidad del Motor", font=('Arial', 16, 'bold'), bg="#f0f0f0", fg="#333")
-        title_label.pack(pady=20)
+        title_label.pack(pady=10)
 
-        fig, self.ax = plt.subplots(figsize=(5, 4))
+        fig, self.ax = plt.subplots(figsize=(4, 3))
         self.line, = self.ax.plot(self.x_values, self.y_values, label='Velocidad')
         self.ax.set_title('Velocidad del Motor')
         self.ax.legend()
@@ -32,7 +32,7 @@ class Motor(Toplevel):
 
         self.scale = Scale(self, from_=0, to=8, orient=HORIZONTAL, length=400, tickinterval=2, bg="#e0e0e0", 
                            troughcolor="#76c7c0", width=15, sliderlength=25, label="Selecciona la velocidad:")
-        self.scale.pack(pady=20)
+        self.scale.pack(pady=5)
 
         self.update_button = Button(self, text="Actualizar Velocidad", fg="#fff", bg="#007acc", font=('Arial', 12, 'bold'), 
                                     command=self.actualizar_grafica)
