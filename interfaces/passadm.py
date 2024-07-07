@@ -7,7 +7,7 @@ class passadmin(Toplevel):
         self.title("Ingrese Contraseña")
         self.geometry("300x100")
 
-        label = Label(self, text="Contraseña:")
+        label = Label(self, text="Ingresa tu contraseña:")
         label.pack(pady=5)
 
         self.password_entry = Entry(self, show="*")

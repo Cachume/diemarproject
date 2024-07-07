@@ -1,0 +1,5 @@
+Al crear la base de datos automaticamente se crea un usuario administrador con los siguientes datos
+
+Correo = admin@admin.com
+Usuario = admin
+Contrasena = admin123
