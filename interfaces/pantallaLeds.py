@@ -40,7 +40,7 @@ class Leds(Toplevel):
         self.combox = StringVar()
         #Combobox Interfaz
         self.comboopciones = ttk.Combobox(self,state="readonly",textvariable=self.combox,
-                     values=['Encender', 'Parpadeo','Encender desde izquierda','Encender desde derecha','Apagar'])
+                     values=['Encender', 'Parpadeo'])
         self.comboopciones.place(y=190, x=90, width=220, height=25)
         #Boton de inicio
         self.botonaccion = Button(self,

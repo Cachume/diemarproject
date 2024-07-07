@@ -1,10 +1,15 @@
 from tkinter import *
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from PIL import Image, ImageTk
 from models.systemdb import Pydb
+from interfaces.arduinopu import arduinopu
+import serial as serial
+import time
 
-class LedsU(Toplevel):
+class LedsU(Tk):
 
+    puerto = ""
+    conexion = False
     def __init__(self):
         super().__init__()
         self.db = Pydb()
@@ -36,8 +41,36 @@ class LedsU(Toplevel):
         self.boton_cargar = Button(self, text="Cargar Secuencia", command=self.cargar_secuencia)
         self.boton_cargar.place(y=180, x=90, width=220, height=25)
 
-        self.boton_arduino= Button(self, text="Conectar Arduino", command=self.cargar_secuencia)
+        self.boton_arduino= Button(self, text="Conectar Arduino", command=self.conectar_arduino)
         self.boton_arduino.place(y=210, x=90, width=220, height=25)
+        
+        self.boton_arduinop= Button(self, text="Cambiar Puerto", command=self.vef_puerto)
+        
+
+    def conectar_arduino(self):
+        if self.puerto != "":
+            if self.conexion == True:
+                self.boton_arduino.config(text="Conectar Arduino")
+                self.conexion = False
+                print("desconectado")
+            else:
+                self.conexion = True
+                self.boton_arduino.config(text="Desconectar Arduino")
+                print("conectado")
+        else:
+            self.vef_puerto()
+            self.boton_arduinop.place(y=240, x=90, width=220, height=25)
+
+    def vef_puerto(self):
+        arduino = arduinopu(self)
+        arduino.grab_set()
+        arduino.wait_window()
+        try:
+            conex=serial.Serial(self.puerto,"9600",timeout=2)
+            conex.close()
+            messagebox.showinfo("Exito al conectar","Arduino conectado con exito")
+        except:
+            messagebox.showerror("Error al conectar arduino","Error al conectar arduino intenta con otro puerto")
 
     def obtener_secuencias_disponibles(self):
         secuencias = self.db.obtener_secuencias()
@@ -46,19 +79,42 @@ class LedsU(Toplevel):
 
     def cargar_secuencia(self):
         if self.animacionled:
+            self.boton_cargar.config(text="Cargar Secuencia")
             self.detener_animacion()
+            if self.conexion == True:
+                self.conex=serial.Serial(self.puerto,"9600")
+                time.sleep(2)
+                comand="apagado"
+                self.conex.write(comand.encode())
+                self.conex.close()
         else:
             seleccion = self.comboopciones.get()
             if seleccion:
                 modo, leds = seleccion.split(' - ')
                 if modo == "Parpadeo":
                     self.cargar_gif(leds, 2)
+                    if self.conexion == True:
+                        selfconex=serial.Serial(self.puerto,"9600")
+                        time.sleep(2)
+                        comand="p"+leds
+                        self.conex.write(comand.encode())
+                        self.conex.close()
                 elif modo == "Encender desde izquierda":
                     self.cargar_gif(leds, 5, "iz")
                 elif modo == "Encender desde derecha":
                     self.cargar_gif(leds, 5, "de")
                 else:
+                    if self.conexion == True:
+                        self.conex=serial.Serial(self.puerto,"9600")
+                        time.sleep(2)
+                        comand="et"+leds
+                        self.conex.write(comand.encode())
+                        self.conex.close()
                     self.cargar_imagen_estatica(leds)
+                    self.animacionled = True
+                    print("et"+leds)
+                
+            self.boton_cargar.config(text="Detener Secuencia")
 
     def cargar_imagen_estatica(self, leds):
         self.animacionled = False
@@ -66,7 +122,7 @@ class LedsU(Toplevel):
         imagen_path = f"assets/{leds_imagen}.png"
         self.imagenframe = PhotoImage(file=imagen_path)
         self.imagen_led.config(image=self.imagenframe)
-        self.boton_cargar.config(text="Cargar Secuencia")
+        # self.boton_cargar.config(text="Cargar Secuencia")
 
     def cargar_gif(self, leds, frames_num, suffix=""):
         self.animacionled = True
