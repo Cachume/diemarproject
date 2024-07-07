@@ -7,7 +7,7 @@ import sys
 class Motor(Toplevel):
     def __init__(self):
         super().__init__()
-        self.title("Proyecto Incubadora | Motor")
+        self.title("Sistema Proyecto | Motor")
         self.geometry("700x550")
         self.resizable(False, False)
         self.configure(bg="#f0f0f0")

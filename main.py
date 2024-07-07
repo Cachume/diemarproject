@@ -1,6 +1,7 @@
 from interfaces.pantallaPrincipal import MainScreen
 from interfaces.pantallaRegistro import Registro
 from models.systemdb import Pydb
+from interfaces.pantallauleds import LedsU
 from tkinter import *
 from tkinter import ttk, messagebox
 

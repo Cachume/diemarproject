@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk, Menu, messagebox
 from PIL import Image, ImageTk
+from models.systemdb import Pydb
 
 class Leds(Toplevel):
     estadoboton = True
@@ -11,6 +12,7 @@ class Leds(Toplevel):
         self.geometry("400x400")
         self.resizable(0,0)
         self.config(bg="#ffffff")
+        self.db = Pydb()
         self.imagenframe = PhotoImage(file="assets/0000.png")
         self.imagen_led = Label(self, image=self.imagenframe, bg="#000000")
         self.imagen_led.place(x=70, y=320)
@@ -42,13 +44,14 @@ class Leds(Toplevel):
         self.comboopciones.place(y=190, x=90, width=220, height=25)
         #Boton de inicio
         self.botonaccion = Button(self,
-                                  text="Empezar",
+                                  text="Añadir Funcion",
                                   fg="#ffffff",
                                   bg="#2ed32a",
                                   font=("Arial",12,'bold'),
                                   border=0,
                                   command=self.Ledstart)
         self.botonaccion.place(x=155, y=250)
+        
     def Ledstart(self):
         confirmacion = False
         modo = self.combox.get()
@@ -94,6 +97,11 @@ class Leds(Toplevel):
                 for led in [self.led1,self.led2,self.led3,self.led4,self.comboopciones]:
                     led.config(state="disable")
                 self.estadoboton = False
+                print(modo,leds)
+                if self.db.guardar_secuencia(modo, leds):
+                    messagebox.showinfo("Sistema","Secuencua guardada con exito")
+                else:
+                    messagebox.showerror("sistema", "Secuencia ya existente, no se guardó")
         else:
             self.botonaccion.config(text="Comenzar",
                                     fg="#ffffff",
