@@ -6,7 +6,7 @@ from interfaces.arduinopu import arduinopu
 import serial as serial
 import time
 
-class LedsU(Tk):
+class LedsU(Toplevel):
 
     puerto = ""
     conexion = False
@@ -51,11 +51,13 @@ class LedsU(Tk):
         if self.puerto != "":
             if self.conexion == True:
                 self.boton_arduino.config(text="Conectar Arduino")
+                self.boton_arduinop.config(state="normal")
                 self.conexion = False
                 print("desconectado")
             else:
                 self.conexion = True
                 self.boton_arduino.config(text="Desconectar Arduino")
+                self.boton_arduinop.config(state="disable")
                 print("conectado")
         else:
             self.vef_puerto()
@@ -80,6 +82,7 @@ class LedsU(Tk):
     def cargar_secuencia(self):
         if self.animacionled:
             self.boton_cargar.config(text="Cargar Secuencia")
+            self.boton_arduino.config(state='normal')
             self.detener_animacion()
             if self.conexion == True:
                 self.conex=serial.Serial(self.puerto,"9600")
@@ -94,7 +97,7 @@ class LedsU(Tk):
                 if modo == "Parpadeo":
                     self.cargar_gif(leds, 2)
                     if self.conexion == True:
-                        selfconex=serial.Serial(self.puerto,"9600")
+                        self.conex=serial.Serial(self.puerto,"9600")
                         time.sleep(2)
                         comand="p"+leds
                         self.conex.write(comand.encode())
@@ -115,6 +118,7 @@ class LedsU(Tk):
                     print("et"+leds)
                 
             self.boton_cargar.config(text="Detener Secuencia")
+            self.boton_arduino.config(state='disable')
 
     def cargar_imagen_estatica(self, leds):
         self.animacionled = False
