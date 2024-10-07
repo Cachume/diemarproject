@@ -1,8 +1,5 @@
 from tkinter import *
 from tkinter import Menu, messagebox
-from interfaces.pantallaLeds import Leds
-from interfaces.pantallauleds import LedsU
-from interfaces.pantallaMotor import Motor
 from interfaces.passadm import passadmin
 from models.systemdb import Pydb
 
@@ -46,12 +43,10 @@ class MainScreen(Tk):
         Label(self, text=f"Última conexión: {self.user_session[2]}", font=('Helvetica', 10), bg="#e0e0e0").pack(pady=5)
     
     def open_leds(self):
-        leds_window = LedsU()
-        leds_window.grab_set()
+        print("hola")
     
     def open_motor(self):
-        motor_window = Motor()
-        motor_window.grab_set()
+        print("hola")
     
     def logout(self):
         self.destroy()
@@ -62,9 +57,7 @@ class MainScreen(Tk):
     def admin_leds(self):
         if self.adminpass != "":
             if self.db.verificaradmin(self.adminpass,self.user_session[0]):
-                leds_window = Leds()
-                leds_window.grab_set()
-                leds_window.wait_window()
+                print("si")
             else:
                 messagebox.showerror("Sistema Manejo","La contraseña es incorrecta")
                 self.adminpass == ""
