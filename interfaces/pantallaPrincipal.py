@@ -56,7 +56,7 @@ class MainScreen(Tk):
     
     def arduino(self):
         try:
-            self.arduinoc = serial.Serial("COM6",9600,timeout=1)
+            self.arduinoc = serial.Serial("COM4",9600,timeout=1)
             print("Se conecto")
         except:
             print("Error con arduino")
