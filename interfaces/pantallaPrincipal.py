@@ -1,10 +1,12 @@
 from tkinter import *
 from tkinter import Menu, messagebox
+import serial
+import time
 #from models.systemdb import Pydb
 
 class MainScreen(Tk):
 
-
+    tiemp = 0
     def __init__(self, user_info):
         super().__init__()
         self.user_session = user_info
@@ -20,11 +22,25 @@ class MainScreen(Tk):
         self.casad = Frame(self,bg="#b4aca4",width=200,height=430)
         self.casad.place(x=650,y=0)
         #self.db=Pydb()
+        self.arduino()
         self.create_labels()
+        #self.actualizar_interfaz()
     
     def create_labels(self):
         Label(self.casaf,bg="#b4aca4" ,fg="#ffffff",text="¡Bienvenido de Nuevo!",font=("Helvetica", 20, 'bold')).pack(pady=10)
         Label(self.casaf,bg="#b4aca4" ,image=self.imagen).pack()
+        self.Cuarto2 = Button(self.casaf, text="Encender Cuarto2",fg="#229954", command=lambda: self.luces("Cuarto2"))
+        self.Cuarto2.place(x=60, y=400)
+        self.Cuarto1 = Button(self.casaf, text="Encender Cuarto1",fg="#229954", command=lambda: self.luces("Cuarto1"))
+        self.Cuarto1.place(x=170, y=400)
+        self.Cuarto4 = Button(self.casaf, text="Encender Cuarto4",fg="#229954", command=lambda: self.luces("Cuarto4"))
+        self.Cuarto4.place(x=70, y=200)
+        self.Cuarto3 = Button(self.casaf, text="Encender Cuarto3",fg="#229954", command=lambda: self.luces("Cuarto3"))
+        self.Cuarto3.place(x=220, y=200)
+    
+        Garage = Button(self.casaf, text="Encender")
+        Garage.place(x=490, y=300)
+
         self.temperatura = Label(self.casad, image=self.imagent,bg="#b4aca4").place(x=65,y=100)
         self.temperaturai = Label(self.casad,text="Temperatura: 30°",bg="#b4aca4",font=("Helvetica", 12, 'bold'))
         self.temperaturai.place(x=40,y=170)
@@ -33,14 +49,37 @@ class MainScreen(Tk):
         self.humedadi.place(x=40,y=290)
 
     
-    def open_leds(self):
-        print("hola")
+    def actualizar_interfaz(self):
+        self.tiemp= self.tiemp+1
+        self.temperaturai.config(text=f"Temperatura: {str(self.tiemp)}°")
+        self.after(1000, self.actualizar_interfaz)
     
-    def open_motor(self):
-        print("hola")
+    def arduino(self):
+        try:
+            self.arduinoc = serial.Serial("COM6",9600,timeout=1)
+            print("Se conecto")
+        except:
+            print("Error con arduino")
     
-    def logout(self):
-        self.destroy()
+    def luces(self,comando):
+        if(comando=="Cuarto1"):
+            botonc= self.Cuarto1
+        elif(comando=="Cuarto2"):
+            botonc= self.Cuarto2
+        elif(comando=="Cuarto3"):
+            botonc= self.Cuarto3
+        elif(comando=="Cuarto4"):
+            botonc= self.Cuarto4
+        print(comando)
+        self.arduinoc.write(comando.encode())
+        time.sleep(3)
+        entrada = self.arduinoc.readline().decode("utf-8").strip()
+        if(entrada =="Encendiendo "+comando):
+            botonc.config(text="Apagar "+comando,fg="#c0392b")
+            print("Se encendio")
+        elif(entrada =="Apagando "+comando):
+            botonc.config(text="Apagar "+comando,fg="#229954")
+            print("Se apago")
     
     def exit_program(self):
         self.destroy()
