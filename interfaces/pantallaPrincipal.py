@@ -6,6 +6,7 @@ import time
 
 class MainScreen(Tk):
 
+    automatico = False
     tiemp = 0
     def __init__(self, user_info):
         super().__init__()
@@ -33,10 +34,10 @@ class MainScreen(Tk):
         self.Cuarto2.place(x=60, y=400)
         self.Cuarto1 = Button(self.casaf, text="Encender Cuarto1",fg="#229954", command=lambda: self.luces("Cuarto1"))
         self.Cuarto1.place(x=170, y=400)
-        self.Cuarto4 = Button(self.casaf, text="Encender Cuarto4",fg="#229954", command=lambda: self.luces("Cuarto4"))
-        self.Cuarto4.place(x=70, y=200)
         self.Cuarto3 = Button(self.casaf, text="Encender Cuarto3",fg="#229954", command=lambda: self.luces("Cuarto3"))
-        self.Cuarto3.place(x=220, y=200)
+        self.Cuarto3.place(x=70, y=200)
+        self.Cuarto4 = Button(self.casaf, text="Encender Cuarto4",fg="#229954", command=lambda: self.luces("Cuarto4"))
+        self.Cuarto4.place(x=220, y=200)
     
         Garage = Button(self.casaf, text="Encender")
         Garage.place(x=490, y=300)
@@ -47,6 +48,30 @@ class MainScreen(Tk):
         self.humedad = Label(self.casad, image=self.imagenh,bg="#b4aca4").place(x=75,y=220)
         self.humedadi = Label(self.casad,text="Humedad: 30%",bg="#b4aca4",font=("Helvetica", 12, 'bold'))
         self.humedadi.place(x=40,y=290)
+
+        self.modos = Button(self.casad, text="Activar Modo Automatico",fg="#229954", command=self.modosluces)
+        self.modos.place(x=30,y=390)
+
+    def modosluces(self):
+        if not self.automatico:
+            comando= "ModoAutomatico"
+            self.arduinoc.write(comando.encode())
+            self.modos.config(text="Desactivar Modo Automatico",fg="#c0392b")
+            self.Cuarto1.config(state="disable")
+            self.Cuarto2.config(state="disable")
+            self.Cuarto3.config(state="disable")
+            self.Cuarto4.config(state="disable")
+            self.automatico = True
+        else:
+            comando= "Salir"
+            self.arduinoc.write(comando.encode())
+            self.modos.config(text="Activar Modo Automatico",fg="#229954")
+            self.Cuarto1.config(state="normal")
+            self.Cuarto2.config(state="normal")
+            self.Cuarto3.config(state="normal")
+            self.Cuarto4.config(state="normal")
+            self.automatico = False
+
 
     
     def actualizar_interfaz(self):
@@ -78,7 +103,7 @@ class MainScreen(Tk):
             botonc.config(text="Apagar "+comando,fg="#c0392b")
             print("Se encendio")
         elif(entrada =="Apagando "+comando):
-            botonc.config(text="Apagar "+comando,fg="#229954")
+            botonc.config(text="Encender "+comando,fg="#229954")
             print("Se apago")
     
     def exit_program(self):

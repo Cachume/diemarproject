@@ -1,6 +1,7 @@
 int luces[] = {13, 12, 11, 10, 7, 6};
 int estadoluces[] = {0, 0, 0, 0, 0, 0};
-int lucesEncendidas = false;
+bool modoAutomatico = false;
+
 void setup() {
   Serial.begin(9600);
   for (int i = 0; i <= 5; i++) {
@@ -24,6 +25,23 @@ void loop() {
       mleds(4, Comando);
     } else if (Comando == "Entrada") {
       mleds(5, Comando);
+    } else if (Comando == "ModoAutomatico") {
+      modoAutomatico = true;
+      while(modoAutomatico){
+        int valor = analogRead(A2);
+        Serial.println(valor);
+        if((Serial.available() > 1)){
+          modoAutomatico = false;
+          } else if (valor <= 100){
+            for (int i = 0; i <= 5; i++) {
+              digitalWrite(luces[i], LOW);
+            }
+          } else if (valor > 35){
+            for (int i = 0; i <= 5; i++) {
+              digitalWrite(luces[i], HIGH);
+            }
+          }
+        }
     } else {
       Serial.println("Ese comando no existe");
     }
