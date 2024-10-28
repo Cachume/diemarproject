@@ -14,6 +14,7 @@ class MainScreen(Tk):
         self.title("Sistema Proyecto")
         self.geometry("850x500")
         self.config(bg="#b4aca4")
+        self.resizable(0,0)
         self.imagen = PhotoImage(file="assets/casa2.png")
         self.imagent = PhotoImage(file="assets/temperatura.png")
         self.imagenh = PhotoImage(file="assets/humedad.png")
@@ -39,8 +40,8 @@ class MainScreen(Tk):
         self.Cuarto4 = Button(self.casaf, text="Encender Cuarto4",fg="#229954", command=lambda: self.luces("Cuarto4"))
         self.Cuarto4.place(x=220, y=200)
     
-        Garage = Button(self.casaf, text="Encender")
-        Garage.place(x=490, y=300)
+        # Garage = Button(self.casaf, text="Encender")
+        # Garage.place(x=490, y=300)
 
         self.temperatura = Label(self.casad, image=self.imagent,bg="#b4aca4").place(x=65,y=100)
         self.temperaturai = Label(self.casad,text="Temperatura: 30°",bg="#b4aca4",font=("Helvetica", 12, 'bold'))
@@ -81,7 +82,7 @@ class MainScreen(Tk):
     
     def arduino(self):
         try:
-            self.arduinoc = serial.Serial("COM4",9600,timeout=1)
+            self.arduinoc = serial.Serial("COM5",9600,timeout=1)
             print("Se conecto")
         except:
             print("Error con arduino")
