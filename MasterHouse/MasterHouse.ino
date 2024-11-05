@@ -1,15 +1,26 @@
+#include <DHT.h>
+#include <DHT_U.h>
+
 int luces[] = {13, 12, 11, 10, 7, 6};
 int estadoluces[] = {0, 0, 0, 0, 0, 0};
 bool modoAutomatico = false;
+
+#define DHTPIN 2      // Pin al que está conectado el sensor
+#define DHTTYPE DHT22 // Tipo de sensor DHT11
+
+DHT dht(DHTPIN, DHTTYPE);
 
 void setup() {
   Serial.begin(9600);
   for (int i = 0; i <= 5; i++) {
     pinMode(luces[i], OUTPUT);
   }
+  dht.begin();
 }
 
 void loop() {
+  float h = dht.readHumidity();
+  float t = dht.readTemperature();
   if (Serial.available() > 1) {
     String Comando = Serial.readString();
     Comando.trim();
@@ -46,6 +57,12 @@ void loop() {
       Serial.println("Ese comando no existe");
     }
   }
+  Serial.print("Humedad: ");
+  Serial.print(h);
+  Serial.print(" %\t");
+  Serial.print("Temperatura: ");
+  Serial.print(t);
+  Serial.println(" *C");
 }
 
 void mleds(int led, String cuarto) {
