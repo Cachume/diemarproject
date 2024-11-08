@@ -57,22 +57,25 @@ void loop() {
       Serial.println("Ese comando no existe");
     }
   }
-  Serial.print("Humedad: ");
   Serial.print(h);
-  Serial.print(" %\t");
-  Serial.print("Temperatura: ");
+  Serial.print("/");
   Serial.print(t);
-  Serial.println(" *C");
+  Serial.print("/");
+  for (int i = 0; i <= 3; i++) {
+    Serial.print(estadoluces[i]);
+  }
+  Serial.println("\n");
+  delay(1000);
 }
 
 void mleds(int led, String cuarto) {
   if (estadoluces[led] == 0) {
     digitalWrite(luces[led], HIGH);
     estadoluces[led] = 1;
-    Serial.println("Encendiendo " + cuarto);
+    //Serial.println("Encendiendo " + cuarto);
   } else {
     digitalWrite(luces[led], LOW);
     estadoluces[led] = 0;
-    Serial.println("Apagando " + cuarto);
+    //Serial.println("Apagando " + cuarto);
   }
 }
