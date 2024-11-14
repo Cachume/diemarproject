@@ -21,6 +21,7 @@ void setup() {
 void loop() {
   float h = dht.readHumidity();
   float t = dht.readTemperature();
+  int sensorluz = analogRead(A0);
   if (Serial.available() > 1) {
     String Comando = Serial.readString();
     Comando.trim();
@@ -32,38 +33,39 @@ void loop() {
       mleds(2, Comando);
     } else if (Comando == "Cuarto4") {
       mleds(3, Comando);
-    } else if (Comando == "Garage") {
+    } else if (Comando == "Patio") {
       mleds(4, Comando);
     } else if (Comando == "Entrada") {
       mleds(5, Comando);
     } else if (Comando == "ModoAutomatico") {
-      modoAutomatico = true;
-      while(modoAutomatico){
-        int valor = analogRead(A2);
-        Serial.println(valor);
-        if((Serial.available() > 1)){
-          modoAutomatico = false;
-          } else if (valor <= 100){
-            for (int i = 0; i <= 5; i++) {
-              digitalWrite(luces[i], LOW);
-            }
-          } else if (valor > 35){
-            for (int i = 0; i <= 5; i++) {
-              digitalWrite(luces[i], HIGH);
-            }
-          }
-        }
+      modoAutomatico = (!modoAutomatico)? true: false;
     } else {
       Serial.println("Ese comando no existe");
     }
   }
+
+  if(modoAutomatico == true && sensorluz <=200){
+    digitalWrite(luces[4], LOW);
+    digitalWrite(luces[5], LOW);
+    estadoluces[4] = 0;
+    estadoluces[5] = 0;
+    } else if(modoAutomatico == true && sensorluz >=200){
+      digitalWrite(luces[4], HIGH);
+      digitalWrite(luces[5], HIGH);
+      estadoluces[4] = 1;
+      estadoluces[5] = 1;
+      }
+
+  //Imprimir datos para lectura del Programa
   Serial.print(h);
   Serial.print("/");
   Serial.print(t);
   Serial.print("/");
-  for (int i = 0; i <= 3; i++) {
+  for (int i = 0; i <= 5; i++) {
     Serial.print(estadoluces[i]);
   }
+  Serial.print("/");
+  Serial.print(sensorluz);
   Serial.println("\n");
   delay(1000);
 }
