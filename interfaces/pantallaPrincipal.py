@@ -7,6 +7,7 @@ class MainScreen(Tk):
 
     automatico = False
     tiemp = 0
+    informacion = False
 
     def __init__(self, user_info):
         super().__init__()
@@ -21,7 +22,7 @@ class MainScreen(Tk):
 
         self.casaf = Frame(self, bg="#b4aca4")
         self.casaf.place(x=0, y=0)
-        self.casad = Frame(self, bg="#b4aca4", width=200, height=430)
+        self.casad = Frame(self, bg="#b4aca4", width=200, height=500)
         self.casad.place(x=650, y=0)
 
         self.arduino()
@@ -44,17 +45,17 @@ class MainScreen(Tk):
         self.Entrada= Button(self.casaf, text="Encender", fg="#ffffff",bg="#229954", command=lambda: self.luces("Entrada"),font=("Helvetica", 10, 'bold'))
         self.Entrada.place(x=350, y=400)
 
-        self.temperatura = Label(self.casad, image=self.imagent, bg="#b4aca4").place(x=65, y=100)
+        self.temperatura = Label(self.casad, image=self.imagent, bg="#b4aca4").place(x=60, y=50)
         self.temperaturai = Label(self.casad, text="Temperatura: 30°", bg="#b4aca4", font=("Helvetica", 12, 'bold'))
-        self.temperaturai.place(x=30, y=170)
-        self.humedad = Label(self.casad, image=self.imagenh, bg="#b4aca4").place(x=75, y=220)
+        self.temperaturai.place(x=25, y=120)
+        self.humedad = Label(self.casad, image=self.imagenh, bg="#b4aca4").place(x=75, y=160)
         self.humedadi = Label(self.casad, text="Humedad: 30%", bg="#b4aca4", font=("Helvetica", 12, 'bold'))
-        self.humedadi.place(x=35, y=290)
+        self.humedadi.place(x=35, y=225)
 
         self.autolabel = Label(self.casad, text="Modo Automatico:", bg="#b4aca4", font=("Helvetica", 12, 'bold'))
-        self.autolabel.place(x=35, y=370)
+        self.autolabel.place(x=35, y=400)
         self.modos = Button(self.casad, text="Activar", fg="#ffffff",bg="#229954" ,command=self.modosluces,font=("Helvetica", 10, 'bold'))
-        self.modos.place(x=70, y=400)
+        self.modos.place(x=70, y=425)
 
     def modosluces(self):
         if not self.automatico:
@@ -80,7 +81,15 @@ class MainScreen(Tk):
             # Actualizar estado de los botones
             estados_led = datos[2]
             self.actualizar_botones(estados_led)
-        
+
+            #Verificacion del sensor de humo
+            valor_sensor = int(datos[4])
+            if valor_sensor >= 200 and not self.informacion:
+                messagebox.showerror("Casa Domotica","Se ha detectado la presencia de Humo/Gas en la casa")
+                self.informacion= True
+            elif valor_sensor < 200 and self.informacion:
+                self.informacion= False
+
         self.after(500, self.actualizar_interfaz)
 
     def actualizar_botones(self, estados_led):
@@ -94,7 +103,7 @@ class MainScreen(Tk):
 
     def arduino(self):
         try:
-            self.arduinoc = serial.Serial("COM3", 9600, timeout=1)
+            self.arduinoc = serial.Serial("COM5", 9600, timeout=1)
             print("Se conecto")
         except:
             print("Error con arduino")

@@ -7,6 +7,7 @@ bool modoAutomatico = false;
 
 #define DHTPIN 2      // Pin al que está conectado el sensor
 #define DHTTYPE DHT22 // Tipo de sensor DHT11
+#define PIN_MQ2 A1 //Pin al que esta conectado el sensor de humo y gas
 
 DHT dht(DHTPIN, DHTTYPE);
 
@@ -21,6 +22,7 @@ void setup() {
 void loop() {
   float h = dht.readHumidity();
   float t = dht.readTemperature();
+  int shg = analogRead(PIN_MQ2);
   int sensorluz = analogRead(A0);
   if (Serial.available() > 1) {
     String Comando = Serial.readString();
@@ -66,6 +68,8 @@ void loop() {
   }
   Serial.print("/");
   Serial.print(sensorluz);
+  Serial.print("/");
+  Serial.print(shg);
   Serial.println("\n");
   delay(1000);
 }
