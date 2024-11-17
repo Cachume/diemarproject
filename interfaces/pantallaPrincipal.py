@@ -19,6 +19,7 @@ class MainScreen(Tk):
         self.imagen = PhotoImage(file="assets/casa2.png")
         self.imagent = PhotoImage(file="assets/temperatura.png")
         self.imagenh = PhotoImage(file="assets/humedad.png")
+        self.imagealert = PhotoImage(file="assets/prevenir.png")
 
         self.casaf = Frame(self, bg="#b4aca4")
         self.casaf.place(x=0, y=0)
@@ -44,6 +45,8 @@ class MainScreen(Tk):
         self.Patio.place(x=350, y=80)
         self.Entrada= Button(self.casaf, text="Encender", fg="#ffffff",bg="#229954", command=lambda: self.luces("Entrada"),font=("Helvetica", 10, 'bold'))
         self.Entrada.place(x=350, y=400)
+        self.Sala= Button(self.casaf, text="Encender", fg="#ffffff",bg="#229954", command=lambda: self.luces("Sala"),font=("Helvetica", 10, 'bold'))
+        self.Sala.place(x=350, y=200)
 
         self.temperatura = Label(self.casad, image=self.imagent, bg="#b4aca4").place(x=60, y=50)
         self.temperaturai = Label(self.casad, text="Temperatura: 30°", bg="#b4aca4", font=("Helvetica", 12, 'bold'))
@@ -56,6 +59,8 @@ class MainScreen(Tk):
         self.autolabel.place(x=35, y=400)
         self.modos = Button(self.casad, text="Activar", fg="#ffffff",bg="#229954" ,command=self.modosluces,font=("Helvetica", 10, 'bold'))
         self.modos.place(x=70, y=425)
+        self.alertai = Label(self.casad, bg="#b4aca4")
+        self.alertai.place(x=70,y=320)
 
     def modosluces(self):
         if not self.automatico:
@@ -85,15 +90,31 @@ class MainScreen(Tk):
             #Verificacion del sensor de humo
             valor_sensor = int(datos[4])
             if valor_sensor >= 200 and not self.informacion:
-                messagebox.showerror("Casa Domotica","Se ha detectado la presencia de Humo/Gas en la casa")
+                self.mostrar_alerta("Se ha detectado la presencia de\n Humo/Gas en la casa")
                 self.informacion= True
+                self.infogh = Label(self.casad, text="Se ha detectado\n Humo/Gas",fg="#ff3e14" ,bg="#b4aca4", font=("Helvetica", 11, 'bold'))
+                self.infogh.place(x=40, y=280)
             elif valor_sensor < 200 and self.informacion:
                 self.informacion= False
+                self.alertai.config(image="")
+                self.infogh.place_forget()
+               
+            if self.informacion:
+                self.imagenpar()
+
 
         self.after(500, self.actualizar_interfaz)
+    
+    def imagenpar(self):
+        if self.tiemp == 0:
+            self.alertai.config(image=self.imagealert)
+            self.tiemp =1
+        elif self.tiemp == 1:
+            self.alertai.config(image="")
+            self.tiemp =0
 
     def actualizar_botones(self, estados_led):
-        botones = [self.Cuarto1, self.Cuarto2, self.Cuarto3, self.Cuarto4,self.Patio,self.Entrada]
+        botones = [self.Cuarto1, self.Cuarto2, self.Cuarto3, self.Cuarto4,self.Patio,self.Entrada,self.Sala]
         for i, estado in enumerate(estados_led):
             print(f"Índice: {i}, Estado: {estado}")
             if estado == '1':
@@ -103,7 +124,7 @@ class MainScreen(Tk):
 
     def arduino(self):
         try:
-            self.arduinoc = serial.Serial("COM5", 9600, timeout=1)
+            self.arduinoc = serial.Serial("COM3", 9600, timeout=1)
             print("Se conecto")
         except:
             print("Error con arduino")
@@ -119,7 +140,14 @@ class MainScreen(Tk):
             botonc = self.Cuarto4
         print(comando)
         self.arduinoc.write(comando.encode())
+    def mostrar_alerta(self, mensaje):
+        alerta = Toplevel(self.casad)
+        alerta.title("Casa Domótica - Alerta")
+        alerta.geometry("300x150")  # Ajusta el tamaño según tus necesidades
+        alerta.resizable(False, False)
 
+        Label(alerta, text=mensaje, fg="red", font=("Helvetica", 12, 'bold')).pack(pady=20)
+        Button(alerta, text="Aceptar", command=alerta.destroy).pack(pady=10)
 if __name__ == "__main__":
     app = MainScreen([1, 'albertq703@gmail.com', '2024-06-29 12:22:46', 2])
     app.mainloop()
