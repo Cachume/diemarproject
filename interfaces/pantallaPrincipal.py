@@ -47,6 +47,8 @@ class MainScreen(Tk):
         self.Entrada.place(x=350, y=400)
         self.Sala= Button(self.casaf, text="Encender", fg="#ffffff",bg="#229954", command=lambda: self.luces("Sala"),font=("Helvetica", 10, 'bold'))
         self.Sala.place(x=350, y=200)
+        self.Pgarage= Button(self.casaf, text="Garage", fg="#ffffff",bg="#229954", command=lambda: self.luces("Garage"),font=("Helvetica", 10, 'bold'))
+        self.Pgarage.place(x=500, y=350)
 
         self.temperatura = Label(self.casad, image=self.imagent, bg="#b4aca4").place(x=60, y=50)
         self.temperaturai = Label(self.casad, text="Temperatura: 30°", bg="#b4aca4", font=("Helvetica", 12, 'bold'))
@@ -149,5 +151,5 @@ class MainScreen(Tk):
         Label(alerta, text=mensaje, fg="red", font=("Helvetica", 12, 'bold')).pack(pady=20)
         Button(alerta, text="Aceptar", command=alerta.destroy).pack(pady=10)
 if __name__ == "__main__":
-    app = MainScreen([1, 'albertq703@gmail.com', '2024-06-29 12:22:46', 2])
+    app = MainScreen([1, 'diemar@gmail.com', '2024-06-29 12:22:46', 2])
     app.mainloop()

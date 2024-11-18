@@ -1,3 +1,4 @@
+#include <Servo.h>
 #include <DHT.h>
 #include <DHT_U.h>
 
@@ -6,6 +7,8 @@ int estadoluces[] = {0, 0, 0, 0, 0, 0, 0};
 bool modoAutomatico = false;
 int pirPin = 4;
 int pirState = LOW;
+Servo Garage;
+bool estado_garage = false;
 
 #define DHTPIN 2      // Pin al que está conectado el sensor
 #define DHTTYPE DHT22 // Tipo de sensor DHT11
@@ -19,7 +22,9 @@ void setup() {
     pinMode(luces[i], OUTPUT);
   }
   dht.begin();
-  pinMode(pirPin, INPUT); 
+  pinMode(pirPin, INPUT);
+  Garage.attach(8);
+  Garage.write(90);
 }
 
 void loop() {
@@ -48,6 +53,14 @@ void loop() {
       modoAutomatico = (!modoAutomatico)? true: false;
     } else if (Comando == "Sala") {
       mleds(6, Comando);
+    }else if (Comando == "Garage") {
+      if(estado_garage){
+        Garage.write(90);
+        estado_garage = false;
+      }else{
+        Garage.write(0);
+        estado_garage = true;
+        }
     } else {
       Serial.println("Ese comando no existe");
     }
